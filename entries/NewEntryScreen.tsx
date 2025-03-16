@@ -1,26 +1,24 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { CategoryEntity } from "./CategoryEntity";
 import { AppDispatch, RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { createCategory } from "../store/categorySlice";
+import { Input, InputField } from "@/components/ui/input";
 
-const NewCategoryScreen: React.FC = () => {
+const NewEntryScreen: React.FC = () => {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const error = useSelector((state: RootState) => state.category.errormessage); // view subscribes to the store
 
-  const onCreateCategory = async () => {
-    const newCategory = new CategoryEntity(title, description);
-
-    dispatch(createCategory(newCategory));
+  const onCreateEntry = async () => {
+    // const newCategory = new CategoryEntity(title, description);
+    // dispatch(createCategory(newCategory));
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text} className="text-orange-500">
-        Create a New Category
+        Create a New Entry
       </Text>
 
       <Text>{error}</Text>
@@ -28,10 +26,12 @@ const NewCategoryScreen: React.FC = () => {
         <Text style={styles.label}>Title</Text>
         <TextInput style={styles.input} onChangeText={setTitle} value={title} placeholder="Enter category title" />
 
-        <Text style={styles.label}>Description</Text>
-        <TextInput style={styles.input} onChangeText={setDescription} value={description} placeholder="Enter a short description" />
+        <Text style={styles.label}>Amount</Text>
+        <Input>
+          <InputField style={styles.input} onChangeText={setAmount} value={amount} placeholder="Enter a short description" inputMode="numeric" />
+        </Input>
       </View>
-      <Button onPress={onCreateCategory} title="Create Category" color="#841584" accessibilityLabel="Create a new category" />
+      <Button onPress={onCreateEntry} title="Create Entry" color="#841584" accessibilityLabel="Create a new entry" />
     </View>
   );
 };
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewCategoryScreen;
+export default NewEntryScreen;

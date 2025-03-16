@@ -10,10 +10,14 @@ import CategoryList from "./categories/CategoryList";
 import NewCategoryScreen from "./categories/NewCategoryScreen";
 import EntriesMain from "./entries/EntriesMain";
 import HomeScreen from "./home/Home";
+import "./global.css";
+import NewEntryScreen from "./entries/NewEntryScreen";
 
 export type RootStackParamList = {
-  Categories: undefined;
+  AllCategories: undefined;
   AddNewCategory: undefined;
+  AllEntries: undefined;
+  AddNewEntry: undefined;
 };
 
 export type BottomTabParamList = {
@@ -27,15 +31,22 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 const CategoryStack = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Categories" component={CategoryList} />
+    <Stack.Screen name="AllCategories" component={CategoryList} />
     <Stack.Screen name="AddNewCategory" component={NewCategoryScreen} />
+  </Stack.Navigator>
+);
+
+const EntryStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen name="AllEntries" component={EntriesMain} />
+    <Stack.Screen name="AddNewEntry" component={NewEntryScreen} />
   </Stack.Navigator>
 );
 
 const HomeTabs = () => (
   <Tab.Navigator>
     <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="Entries" component={EntriesMain} />
+    <Tab.Screen name="Entries" component={EntryStack} />
     <Tab.Screen name="Categories" component={CategoryStack} />
   </Tab.Navigator>
 );

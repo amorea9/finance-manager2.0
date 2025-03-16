@@ -43,6 +43,7 @@
     "@types/react": "~18.3.12",
     "@types/react-native": "^0.72.8",
     "jscodeshift": "^0.15.2",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.8.2"
   },
   "private": true

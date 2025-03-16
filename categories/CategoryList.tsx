@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "../store/store";
 import { fetchCategories, removeCategory } from "../store/categorySlice";
 
 const CategoryList: React.FC = () => {
-  type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Categories">;
+  type NavigationProp = NativeStackNavigationProp<RootStackParamList, "AllCategories">;
   const navigation = useNavigation<NavigationProp>();
   const categories = useSelector((state: RootState) => state.category.categories);
   const dispatch = useDispatch<AppDispatch>();
@@ -17,7 +17,7 @@ const CategoryList: React.FC = () => {
   // Fetch categories on categories change
   useEffect(() => {
     dispatch(fetchCategories());
-  }, [categories]);
+  }, []);
 
   const onRemoveCategory = async (id: number) => {
     // You might want to show a confirmation before removing a category
@@ -45,14 +45,14 @@ const CategoryList: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Button onPress={() => navigation.navigate("AddNewCategory")} title="Create new Category" color="#841584" />
         <SafeAreaView className="flex gap-4 w-auto">
           <Text style={styles.text} className="text-orange-500">
-            Added categories:
+            Your categories:
           </Text>
 
           {categories && categories.length > 0 && <FlatList data={categories} keyExtractor={(item) => item.id?.toString() ?? ""} renderItem={renderItem} contentContainerStyle={styles.list} />}
         </SafeAreaView>
+        <Button onPress={() => navigation.navigate("AddNewCategory")} title="Create new Category" />
       </View>
     </SafeAreaView>
   );
@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 16,
+    marginLeft: 32,
+    marginRight: 32,
   },
   list: {
     paddingBottom: 16,

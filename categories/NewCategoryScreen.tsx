@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { CategoryEntity } from "./CategoryEntity";
 import { AppDispatch, RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { createCategory } from "../store/categorySlice";
+import { createCategory, fetchCategories } from "../store/categorySlice";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "@/App";
+import { useNavigation } from "@react-navigation/native";
 
 const NewCategoryScreen: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  // type NavigationProp = NativeStackNavigationProp<RootStackParamList, "AllCategories">;
+  const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
   const error = useSelector((state: RootState) => state.category.errormessage); // view subscribes to the store
 
@@ -15,6 +20,15 @@ const NewCategoryScreen: React.FC = () => {
     const newCategory = new CategoryEntity(title, description);
 
     dispatch(createCategory(newCategory));
+    Alert.alert("Confirmation", "The category has been created!", [
+      {
+        text: "OK",
+        onPress: async () => {
+          navigation.goBack();
+        },
+      },
+    ]);
+    dispatch(fetchCategories());
   };
 
   return (

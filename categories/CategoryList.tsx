@@ -27,7 +27,7 @@ const CategoryList: React.FC = () => {
         text: "OK",
         onPress: async () => {
           await dispatch(removeCategory(id));
-          // dispatch(fetchCategories());
+          dispatch(fetchCategories());
         },
       },
     ]);

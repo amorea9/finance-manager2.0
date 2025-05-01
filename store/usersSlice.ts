@@ -1,6 +1,7 @@
 import { CreateUserDto } from "@/users/CreateUserDto";
 import { UsersAPI } from "@/users/UsersAPI";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import * as SecureStore from "expo-secure-store";
 
 // First, create the thunk
 // export const getUsers = createAsyncThunk("categories/fetchAll", async (thunkAPI) => {
@@ -32,7 +33,16 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    reloadJwtFromStorage: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+    },
+    logout: (state) => {
+      state.token = "";
+      SecureStore.setItemAsync("jwt", "");
+    },
+    // standard reducer logic, with auto-generated action types per reducer
+  },
   extraReducers: (builder) => {
     builder.addCase(signup.fulfilled, (state, action) => {
       console.log("payload", action.payload);
@@ -48,7 +58,7 @@ const userSlice = createSlice({
 
     builder.addCase(login.fulfilled, (state, action) => {
       console.log("payload", action.payload);
-
+      SecureStore.setItemAsync("jwt", JSON.stringify(action.payload));
       state.token = action.payload;
       state.errormessage = "";
     });
@@ -75,5 +85,6 @@ const userSlice = createSlice({
     // });
   },
 });
+export const { reloadJwtFromStorage, logout } = userSlice.actions;
 
 export default userSlice.reducer;

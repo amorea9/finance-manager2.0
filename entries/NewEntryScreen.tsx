@@ -1,128 +1,172 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, TextInput } from "react-native";
-import { Select, SelectTrigger, SelectInput, SelectPortal, SelectBackdrop, SelectContent, SelectItem } from "@gluestack-ui/themed";
+import { View, Text, Button, StyleSheet, TextInput, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { createEntry } from "@/store/entrySlice";
 import { EntryEntity } from "./EntryEntity";
-import { CategoryEntity } from "@/categories/CategoryEntity";
+import DropDownPicker from "react-native-dropdown-picker"; // Correct import
 
 const NewEntryScreen: React.FC = () => {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(new Date());
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
-  const [currency, setCurrency] = useState("USD");
-  const [categoryID, setCategoryID] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<string>("Cash");
+  const [currency, setCurrency] = useState<string>("USD");
+  const [categoryID, setCategoryID] = useState<string>("");
+
+  const [paymentMethodOpen, setPaymentMethodOpen] = useState(false);
+  const [currencyOpen, setCurrencyOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const error = useSelector((state: RootState) => state.category.errormessage);
   const categories = useSelector((state: RootState) => state.category.categories);
 
   const onCreateEntry = () => {
-    const newEntry = new EntryEntity(title, parseInt(amount), date.toString(), paymentMethod, currency, parseInt(categoryID));
+    if (!title || !amount) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
+    const newEntry = new EntryEntity(title, parseFloat(amount), date.toISOString(), paymentMethod, currency, parseInt(categoryID));
+
     dispatch(createEntry(newEntry));
+
+    setTitle("");
+    setAmount("");
+    setDate(new Date());
+    setPaymentMethod("Cash");
+    setCurrency("USD");
+    setCategoryID("");
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Create a New Entry</Text>
-      <Text>{error}</Text>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <Text style={styles.title}>Create a New Entry</Text>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <Text style={styles.label}>Title</Text>
-      <TextInput style={styles.input} onChangeText={setTitle} value={title} placeholder="Enter entry title" />
+        {/* Title input */}
+        <Text style={styles.label}>Title</Text>
+        <TextInput style={styles.input} onChangeText={setTitle} value={title} placeholder="Enter entry title" />
 
-      <Text style={styles.label}>Amount</Text>
-      <TextInput style={styles.input} onChangeText={setAmount} value={amount} placeholder="Enter the amount" />
+        {/* Amount input */}
+        <Text style={styles.label}>Amount</Text>
+        <TextInput style={styles.input} onChangeText={setAmount} value={amount} placeholder="Enter the amount" keyboardType="numeric" />
 
-      <Text style={styles.label}>Date</Text>
-      <View style={styles.dateWrapper}>
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            if (selectedDate) {
-              setDate(selectedDate);
-            }
-          }}
+        {/* Date picker */}
+        <Text style={styles.label}>Date</Text>
+        <View style={styles.dateWrapper}>
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              if (selectedDate) {
+                setDate(selectedDate);
+              }
+            }}
+          />
+        </View>
+
+        {/* Payment Method dropdown */}
+        <Text style={styles.label}>Payment Method</Text>
+        <DropDownPicker
+          open={paymentMethodOpen}
+          value={paymentMethod}
+          items={[
+            { label: "Cash", value: "Cash" },
+            { label: "Credit Card", value: "CreditCard" },
+            { label: "Bank Transfer", value: "BankTransfer" },
+          ]}
+          setValue={setPaymentMethod}
+          setOpen={setPaymentMethodOpen}
+          style={[styles.pickerStyle, { zIndex: 3000 }]} // Explicitly set zIndex
+          dropDownContainerStyle={{ zIndex: 4000 }} // Ensure dropdown items are on top
         />
-      </View>
 
-      <Text style={styles.label}>Payment Method</Text>
-      <Select selectedValue={paymentMethod} onValueChange={setPaymentMethod}>
-        <SelectTrigger>
-          <SelectInput placeholder="Select payment method" />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectBackdrop />
-          <SelectContent>
-            <SelectItem label="Cash" value="Cash" />
-            <SelectItem label="Credit Card" value="CreditCard" />
-            <SelectItem label="Bank Transfer" value="BankTransfer" />
-          </SelectContent>
-        </SelectPortal>
-      </Select>
+        {/* Currency dropdown */}
+        <Text style={styles.label}>Currency</Text>
+        <DropDownPicker
+          open={currencyOpen}
+          value={currency}
+          items={[
+            { label: "DKK", value: "DKK" },
+            { label: "EUR", value: "EUR" },
+            { label: "GBP", value: "GBP" },
+            { label: "USD", value: "USD" },
+          ]}
+          setValue={setCurrency}
+          setOpen={setCurrencyOpen}
+          style={[styles.pickerStyle, { zIndex: 3000 }]} // Explicitly set zIndex
+          dropDownContainerStyle={{ zIndex: 4000 }} // Ensure dropdown items are on top
+        />
 
-      <Text style={styles.label}>Currency</Text>
-      <Select selectedValue={currency} onValueChange={setCurrency}>
-        <SelectTrigger>
-          <SelectInput placeholder="Select currency" />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectBackdrop />
-          <SelectContent>
-            <SelectItem label="DKK" value="DKK" />
-            <SelectItem label="EUR" value="EUR" />
-            <SelectItem label="GBP" value="GBP" />
-          </SelectContent>
-        </SelectPortal>
-      </Select>
+        {/* Category dropdown */}
+        <Text style={styles.label}>Category</Text>
+        <DropDownPicker
+          open={categoryOpen}
+          value={categoryID}
+          items={categories.map((category) => ({
+            label: category.title,
+            value: String(category.id),
+          }))}
+          setValue={setCategoryID}
+          setOpen={setCategoryOpen}
+          style={[styles.pickerStyle, { zIndex: 3000 }]} // Explicitly set zIndex
+          dropDownContainerStyle={{ zIndex: 4000 }} // Ensure dropdown items are on top
+        />
 
-      <Text style={styles.label}>Category</Text>
-      <Select selectedValue={categoryID} onValueChange={setCategoryID}>
-        <SelectTrigger>
-          <SelectInput placeholder="Select category" />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectBackdrop />
-          <SelectContent>{categories.map((category: CategoryEntity) => (category.id ? <SelectItem key={String(category.id)} label={category.title} value={String(category.id)} /> : null))}</SelectContent>
-        </SelectPortal>
-      </Select>
-
-      <Button onPress={onCreateEntry} title="Create Entry" color="#841584" />
-    </View>
+        {/* Submit button */}
+        <Button onPress={onCreateEntry} title="Create Entry" color="#841584" />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    padding: 16,
-    marginLeft: 40,
-    marginRight: 40,
   },
-  text: {
+  scrollView: {
+    padding: 16,
+    marginHorizontal: 40,
+  },
+  title: {
     fontSize: 25,
     fontWeight: "bold",
+    marginBottom: 20,
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
     marginBottom: 6,
+    marginTop: 10,
   },
   input: {
     height: 40,
     marginBottom: 20,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 6,
+    borderColor: "#ccc",
   },
   dateWrapper: {
-    flex: 1,
-    justifyContent: "space-around",
-    alignItems: "flex-start",
     flexDirection: "row",
+    justifyContent: "flex-start",
+    marginBottom: 20,
+  },
+  pickerStyle: {
+    height: 50,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 6,
+    paddingLeft: 10,
   },
 });
 

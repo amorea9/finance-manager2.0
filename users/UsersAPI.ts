@@ -1,4 +1,3 @@
-import axios from "axios";
 import { CreateUserDto } from "./CreateUserDto";
 
 export class UsersAPI {

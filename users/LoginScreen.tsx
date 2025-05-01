@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { login, signup } from "@/store/usersSlice";
+import { CreateUserDto } from "./CreateUserDto";
 
 const LoginScreen: React.FC = () => {
   type NavigationProp = NativeStackNavigationProp<RootStackParamList, "LoginScreen">;
@@ -17,7 +18,8 @@ const LoginScreen: React.FC = () => {
   const userToken = useSelector((state: RootState) => state.user.token);
 
   const onSubmit = async () => {
-    dispatch(login({ email, password }));
+    // dispatch(login({ email, password }));
+    dispatch(login(new CreateUserDto(email, password)));
   };
 
   return (

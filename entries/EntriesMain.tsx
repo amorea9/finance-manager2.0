@@ -28,8 +28,9 @@ const EntriesMain: React.FC = () => {
         {(item.amount || item.currency) && (
           <View className="h-full flex justify-around py-8">
             <Text style={styles.label}>Entry details:</Text>
-            <Text style={styles.itemText}>Amount: {item.amount}</Text>
-            <Text style={styles.itemText}>{item.currency}</Text>
+            <Text style={styles.itemText}>
+              Amount: {item.amount} <Text>{item.currency}</Text>
+            </Text>
           </View>
         )}
         {item.date && <Text style={styles.itemText}>{item.date}</Text>}
@@ -55,15 +56,14 @@ const EntriesMain: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView className="w-auto mt-16">
-        <Text style={styles.text} className="text-orange-500">
-          Your Entries:
-        </Text>
+      {/* <SafeAreaView className="w-auto mt-16"> */}
+      <Text style={styles.text} className="text-orange-500">
+        Your Entries:
+      </Text>
 
-        {entries && entries.length > 0 && <FlatList data={entries} keyExtractor={(item) => item.id?.toString() ?? ""} renderItem={renderItem} contentContainerStyle={styles.list} />}
-      </SafeAreaView>
-
+      {entries && entries.length > 0 && <FlatList data={entries} keyExtractor={(item) => item.id?.toString() ?? ""} renderItem={renderItem} contentContainerStyle={styles.list} />}
       <Button onPress={() => navigation.navigate("AddNewEntry")} title="Create new Entry" />
+      {/* </SafeAreaView> */}
     </SafeAreaView>
   );
 };
@@ -75,6 +75,8 @@ const styles = StyleSheet.create({
     padding: 16,
     marginLeft: 32,
     marginRight: 32,
+    marginTop: 30,
+    marginBottom: 30,
   },
   list: {
     paddingBottom: 16,

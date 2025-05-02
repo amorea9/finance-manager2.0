@@ -7,6 +7,7 @@ import { createCategory, fetchCategories } from "../store/categorySlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@/App";
 import { useNavigation } from "@react-navigation/native";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 
 const NewCategoryScreen: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -15,20 +16,49 @@ const NewCategoryScreen: React.FC = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
   const error = useSelector((state: RootState) => state.category.errormessage); // view subscribes to the store
+  const queryClient = new QueryClient();
+
+  // Mutations
+  const mutation = useMutation({
+    mutationFn: async (newCategory: CategoryEntity) => {
+      console.log(newCategory);
+
+      const response = await fetch("http://127.0.0.1:3000/categories", {
+        method: "POST",
+        body: JSON.stringify(newCategory),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
 
   const onCreateCategory = async () => {
     const newCategory = new CategoryEntity(title, description);
+    mutation.mutate(newCategory);
 
-    dispatch(createCategory(newCategory));
-    Alert.alert("Confirmation", "The category has been created!", [
-      {
-        text: "OK",
-        onPress: async () => {
-          navigation.goBack();
-        },
-      },
-    ]);
-    dispatch(fetchCategories());
+    // const newCategory = new CategoryEntity(title, description);
+
+    // dispatch(createCategory(newCategory));
+    // Alert.alert("Confirmation", "The category has been created!", [
+    //   {
+    //     text: "OK",
+    //     onPress: async () => {
+    //       navigation.goBack();
+    //     },
+    //   },
+    // ]);
+    // dispatch(fetchCategories());
   };
 
   return (

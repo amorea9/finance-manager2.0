@@ -15,6 +15,8 @@ import NewEntryScreen from "./entries/NewEntryScreen";
 import SignupScreen from "./users/SignupScreen";
 import NavigationWrapper from "./components/ui/NavigationWrapper";
 import LoginScreen from "./users/LoginScreen";
+import ProfileScreen from "./users/ProfileScreen";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export type RootStackParamList = {
   AllCategories: undefined;
@@ -33,6 +35,7 @@ export type BottomTabParamList = {
   Home: undefined;
   Entries: undefined;
   Categories: undefined;
+  ProfileScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -64,16 +67,20 @@ export const HomeTabs = () => (
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="Entries" component={EntryStack} />
     <Tab.Screen name="Categories" component={CategoryStack} />
+    <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
   </Tab.Navigator>
 );
 
 export default function App() {
+  const queryClient = new QueryClient();
   return (
-    <GluestackUIProvider>
-      <Provider store={store}>
-        <NavigationWrapper />
-      </Provider>
-    </GluestackUIProvider>
+    <QueryClientProvider client={queryClient}>
+      <GluestackUIProvider>
+        <Provider store={store}>
+          <NavigationWrapper />
+        </Provider>
+      </GluestackUIProvider>
+    </QueryClientProvider>
   );
 }
 

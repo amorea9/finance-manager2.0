@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { EntryEntity } from "../entries/EntryEntity";
+import { CreateEntryDto } from "../entries/EntryEntity";
 import { EntriesAPI } from "@/entries/EntriesAPI";
 
 // First, create the thunk
@@ -7,7 +7,7 @@ export const fetchEntries = createAsyncThunk("entries/fetchAll", async (thunkAPI
   return await EntriesAPI.getEntries();
 });
 
-export const createEntry = createAsyncThunk("entries/create", async (entry: EntryEntity, thunkAPI) => {
+export const createEntry = createAsyncThunk("entries/create", async (entry: CreateEntryDto, thunkAPI) => {
   return await EntriesAPI.createEntry(entry);
 });
 
@@ -16,7 +16,7 @@ export const removeEntry = createAsyncThunk("entries/delete", async (id: number,
 });
 
 interface EntryState {
-  entries: EntryEntity[];
+  entries: CreateEntryDto[];
   errormessage: string;
 }
 

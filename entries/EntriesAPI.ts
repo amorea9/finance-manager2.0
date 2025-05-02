@@ -1,16 +1,17 @@
-import { EntryEntity } from "./EntryEntity";
 import axios from "axios";
+import { CreateEntryDto } from "./EntryEntity";
 
 export class EntriesAPI {
   static baseUrl = "http://127.0.0.1:3000/entries";
 
   static async getEntries() {
-    const response = await axios.get<EntryEntity[]>(this.baseUrl);
+    const response = await axios.get<CreateEntryDto[]>(this.baseUrl);
     return response.data;
   }
 
-  static async createEntry(entry: EntryEntity) {
+  static async createEntry(entry: CreateEntryDto) {
     console.log("calling " + EntriesAPI.baseUrl);
+    console.log("entry to send to db", entry);
 
     const response = await fetch(EntriesAPI.baseUrl, {
       method: "POST",

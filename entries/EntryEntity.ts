@@ -1,4 +1,4 @@
-export class EntryEntity {
+export class CreateEntryDto {
   id: number | undefined;
-  constructor(public title: string, public amount: number, public date: string, public paymentMethod: string, public currency: string, public categoryId: number) {}
+  constructor(public title: string, public amount: string, public date: string, public paymentMethod: string, public currency: string, public categoryId: number) {}
 }

@@ -4,15 +4,15 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { createEntry } from "@/store/entrySlice";
-import { EntryEntity } from "./EntryEntity";
+import { CreateEntryDto } from "./EntryEntity";
 import DropDownPicker from "react-native-dropdown-picker"; // Correct import
 
 const NewEntryScreen: React.FC = () => {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(new Date());
-  const [paymentMethod, setPaymentMethod] = useState<string>("Cash");
-  const [currency, setCurrency] = useState<string>("USD");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [currency, setCurrency] = useState("");
   const [categoryID, setCategoryID] = useState<string>("");
 
   const [paymentMethodOpen, setPaymentMethodOpen] = useState(false);
@@ -29,9 +29,9 @@ const NewEntryScreen: React.FC = () => {
       return;
     }
 
-    const newEntry = new EntryEntity(title, parseFloat(amount), date.toISOString(), paymentMethod, currency, parseInt(categoryID));
-
-    dispatch(createEntry(newEntry));
+    // const newEntry = new CreateEntryDto(title, parseFloat(amount), date.toISOString(), paymentMethod, currency, parseInt(categoryID));
+    console.log("categoryID", categoryID);
+    dispatch(createEntry(new CreateEntryDto(title, amount, date.toString(), paymentMethod, currency, parseInt(categoryID))));
 
     setTitle("");
     setAmount("");
@@ -110,7 +110,7 @@ const NewEntryScreen: React.FC = () => {
           value={categoryID}
           items={categories.map((category) => ({
             label: category.title,
-            value: String(category.id),
+            value: category.id?.toString(),
           }))}
           setValue={setCategoryID}
           setOpen={setCategoryOpen}

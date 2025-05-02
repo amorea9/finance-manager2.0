@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { Button, SafeAreaView, StyleSheet, Text } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native"; // Hook for functional component navigation
 import { Box } from "@/components/ui/box";
@@ -15,11 +15,7 @@ const HomeScreen: React.FC = () => {
         </Text>
       </Box>
       {/* Replace Link with Button to navigate */}
-      {/* <Button
-        title="Entries HEREEE"
-        onPress={() => navigation.navigate("Entries")}
-        color="#841584" // Navigate to EntriesMain screen
-      /> */}
+
       <SafeAreaView className="px-3">
         <Text>Select "entries" from the bottom menu to add your spendings.</Text>
         <Text>You can also create new categories below.</Text>

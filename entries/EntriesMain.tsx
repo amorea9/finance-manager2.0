@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchEntries, removeEntry } from "@/store/entrySlice";
-import { EntryEntity } from "./EntryEntity";
+import { CreateEntryDto } from "./EntryEntity";
 
 const EntriesMain: React.FC = () => {
   type NavigationProp = NativeStackNavigationProp<RootStackParamList, "AllEntries">;
@@ -18,10 +18,11 @@ const EntriesMain: React.FC = () => {
   // Fetch categories on categories change
   useEffect(() => {
     dispatch(fetchEntries());
+    console.log("entriesPage", entries);
   }, []);
 
   // Render a single category item
-  const renderItem = ({ item }: { item: EntryEntity }) => (
+  const renderItem = ({ item }: { item: CreateEntryDto }) => (
     <TouchableOpacity onPress={() => onRemoveEntry(item.id as number)}>
       <View style={styles.item}>
         <Text style={styles.itemText}>{item.title}</Text>

@@ -7,17 +7,34 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchCategories, removeCategory } from "../store/categorySlice";
+import { useQuery } from "@tanstack/react-query";
 
 const CategoryList: React.FC = () => {
   type NavigationProp = NativeStackNavigationProp<RootStackParamList, "AllCategories">;
   const navigation = useNavigation<NavigationProp>();
-  const categories = useSelector((state: RootState) => state.category.categories);
+  // const categories = useSelector((state: RootState) => state.category.categories);
   const dispatch = useDispatch<AppDispatch>();
 
+  const {
+    isLoading,
+    isError,
+    data: categories,
+    error,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await fetch("http://127.0.0.1:3000/categories");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    },
+  });
+
   // Fetch categories on categories change
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchCategories());
+  // }, []);
 
   const onRemoveCategory = async (id: number) => {
     // You might want to show a confirmation before removing a category

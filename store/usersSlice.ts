@@ -1,3 +1,4 @@
+import { CategoriesAPI } from "@/categories/CategoriesAPI";
 import { CreateUserDto } from "@/users/CreateUserDto";
 import { UsersAPI } from "@/users/UsersAPI";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
